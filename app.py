@@ -71,6 +71,40 @@ ewaste_data = {
     }
 }
 
+# RAG Knowledge Base for e-waste queries
+rag_knowledge = [
+    {"keywords": ["what", "e-waste", "ewaste", "electronic waste"], "response": """**What is E-Waste?**\n\nE-waste (electronic waste) refers to discarded electrical or electronic devices. This includes:\n- Computers, laptops, tablets\n- Mobile phones\n- TVs and monitors\n- Batteries and chargers\n- Cables and wires\n- CDs/DVDs\n- Refrigerators, ACs, washing machines\n\nE-waste contains hazardous materials like lead, mercury, and cadmium that can harm the environment if not disposed properly."""},
+    {"keywords": ["why", "important", "recycle", "disposal", "proper"], "response": """**Why is Proper E-Waste Disposal Important?**\n\n1. **Environmental Protection**: E-waste contains toxic materials that can contaminate soil and water\n2. **Health Safety**: Improper disposal exposes people to harmful chemicals\n3. **Resource Recovery**: E-waste contains valuable materials like gold, silver, copper that can be recycled\n4. **Legal Compliance**: E-waste disposal is regulated under E-Waste Management Rules 2016 in India"""},
+    {"keywords": ["battery", "batteries"], "response": """**Battery Disposal Guide**\n\n🔋 Batteries are **hazardous e-waste** containing heavy metals.\n\n**Do's:**\n- Store used batteries in a dry, cool place\n- Take to authorized battery collection centers\n- Look for battery drop-off bins at electronics stores\n\n**Don'ts:**\n- Never throw in regular trash\n- Don't burn or incinerate\n- Don't puncture or damage""", "map_link": "https://www.google.com/maps/search/battery+e-waste+collection+Chennai"},
+    {"keywords": ["phone", "mobile", "smartphone", "cell"], "response": """**Mobile Phone Disposal Guide**\n\n📱 Mobile phones contain batteries and precious metals.\n\n**Before Disposal:**\n1. Factory reset to wipe personal data\n2. Remove SIM card and memory card\n3. Remove battery if possible\n\n**Disposal Options:**\n- Manufacturer take-back programs\n- Authorized e-waste recyclers\n- Electronics store collection programs""", "map_link": "https://www.google.com/maps/search/e-waste+collection+centers+Chennai"},
+    {"keywords": ["computer", "laptop", "pc", "desktop"], "response": """**Computer/Laptop Disposal Guide**\n\n💻 Computers contain hazardous materials and valuable metals.\n\n**Before Disposal:**\n1. Backup important data\n2. Securely wipe hard drive\n3. Remove battery (for laptops)\n\n**Disposal:**\n- Use certified e-waste recyclers\n- Check manufacturer take-back programs\n- Never dump in regular trash""", "map_link": "https://www.google.com/maps/search/authorized+electronics+recyclers+Chennai"},
+    {"keywords": ["where", "center", "collection", "find", "near", "location"], "response": """**Finding E-Waste Collection Centers**\n\n📍 You can find authorized e-waste collection centers through:\n\n1. **Google Maps**: Search for "e-waste collection center" + your city\n2. **CPCB Website**: List of authorized recyclers\n3. **Electronics Stores**: Many accept old electronics\n4. **Manufacturer Programs**: Brand take-back schemes\n\nClick the map link below to find centers near you!""", "map_link": "https://www.google.com/maps/search/authorized+e-waste+recycling+centers+Chennai"},
+    {"keywords": ["rules", "law", "regulation", "india", "cpcb"], "response": """**E-Waste Rules in India**\n\n📜 E-Waste Management Rules 2016 (amended 2018):\n\n- **Producer Responsibility**: Manufacturers must collect back e-waste\n- **Authorized Recyclers**: Only CPCB/SPCB authorized facilities can process e-waste\n- **Consumer Duty**: Consumers should dispose e-waste only through authorized channels\n- **Penalties**: Improper disposal can lead to fines\n\n🔗 [CPCB E-Waste Rules](https://cpcb.nic.in/e-waste-rules/)"""},
+    {"keywords": ["cable", "wire", "charger", "cord"], "response": """**Cable/Wire Disposal Guide**\n\n🔌 Cables contain copper and plastic materials.\n\n**Disposal:**\n- Collect old cables together\n- Take to e-waste collection centers\n- Copper can be recovered and recycled\n\n**Don't:**\n- Burn cables (releases toxic fumes)\n- Throw in regular trash""", "map_link": "https://www.google.com/maps/search/e-waste+collection+centers+Chennai"},
+    {"keywords": ["cd", "dvd", "disc"], "response": """**CD/DVD Disposal Guide**\n\n💿 CDs and DVDs contain polycarbonate plastic and metal layers.\n\n**Disposal:**\n- Take to mixed e-waste recycling centers\n- Some electronics stores accept them\n\n**Don't:**\n- Burn them (releases toxic fumes)\n- Throw in regular household trash""", "map_link": "https://www.google.com/maps/search/authorized+e-waste+recycling+centers+Chennai"},
+    {"keywords": ["tv", "television", "monitor", "screen"], "response": """**TV/Monitor Disposal Guide**\n\n📺 TVs and monitors (especially CRT) contain lead and hazardous materials.\n\n**Disposal:**\n- Contact certified e-waste recyclers\n- Use manufacturer take-back programs\n- Never dump illegally\n\n**CRT TVs/Monitors**: Contain high amounts of lead - handle with extra care""", "map_link": "https://www.google.com/maps/search/authorized+electronics+recyclers+Chennai"},
+    {"keywords": ["refrigerator", "fridge", "ac", "air conditioner", "washing machine", "appliance"], "response": """**Large Appliance Disposal Guide**\n\n🏠 Refrigerators, ACs, washing machines are large e-waste items.\n\n**Special Concerns:**\n- Refrigerators/ACs contain CFCs and refrigerants\n- Require specialized handling\n\n**Disposal:**\n- Contact authorized large appliance recyclers\n- Some municipalities offer pickup services\n- Check with the manufacturer for take-back""", "map_link": "https://www.google.com/maps/search/large+appliance+recyclers+Chennai"},
+]
+
+# RAG Query Function
+def rag_query(user_input):
+    """Find the best matching response from knowledge base"""
+    user_lower = user_input.lower()
+    best_match = None
+    best_score = 0
+    
+    for item in rag_knowledge:
+        score = sum(1 for kw in item["keywords"] if kw in user_lower)
+        if score > best_score:
+            best_score = score
+            best_match = item
+    
+    if best_match and best_score > 0:
+        return best_match["response"], best_match.get("map_link")
+    
+    # Default response
+    return """I can help you with e-waste disposal! You can:\n\n1. **Upload an image** of any electronic item for identification\n2. **Ask questions** like:\n   - "What is e-waste?"\n   - "How to dispose batteries?"\n   - "Where to find collection centers?"\n\nTry uploading an image or ask a specific question!""", None
+
 # Prediction function
 def predict(image):
     if interpreter is None:
@@ -175,6 +209,20 @@ if uploaded_file is not None:
             st.session_state.messages.append({"role": "assistant", "content": "Error: Model not loaded."})
         
         st.rerun()
+
+# Chat input for text queries (RAG)
+if prompt := st.chat_input("Type your question here..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    
+    # Get RAG response
+    response, map_link = rag_query(prompt)
+    
+    if map_link:
+        st.session_state.messages.append({"role": "assistant", "content": response, "map_link": map_link})
+    else:
+        st.session_state.messages.append({"role": "assistant", "content": response})
+    
+    st.rerun()
 
 # Sidebar
 with st.sidebar:
