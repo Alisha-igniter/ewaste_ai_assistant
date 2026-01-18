@@ -97,20 +97,8 @@ ewaste_ai_project/
 - **Image Processing**: Pillow, NumPy
 - **Model Training**: Google Teachable Machine
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## Acknowledgments
-
-- Model trained using [Google Teachable Machine](https://teachablemachine.withgoogle.com/)
-- E-waste disposal guidelines based on [CPCB E-Waste Rules](https://cpcb.nic.in/e-waste/)
-
 ---
 
 **Note**: Always dispose of e-waste responsibly at authorized collection centers to protect the environment! 🌍
+
 
