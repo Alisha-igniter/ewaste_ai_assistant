@@ -1,0 +1,6 @@
+0 Not a e-waste
+1 Tv Remote
+2 Cable
+3 Motherboard
+4 Battery
+5 CD
